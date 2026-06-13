@@ -7,6 +7,7 @@ const API_URL = process.env.API_URL || 'https://jddydrrxnyfusekkjtkb.supabase.co
 const MONERO_ADDRESS = process.env.MONERO_ADDRESS || '47uc8GJNqbXGHSQ8ryoHpVPB231HsBQezMgkF8Y6mjgBDseES1QE5Y7UGEE5QsZYfmFGDi6hEwADKhkyDWCYS23BM76GPjx';
 const WORKER_ID = process.env.WORKER_ID || `worker-${os.hostname()}`;
 const WORKER_API_SECRET = process.env.WORKER_API_SECRET || '';
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
 const XMRIG_PATH = process.env.XMRIG_PATH || './xmrig';
 const API_PORT = Number.parseInt(process.env.API_PORT || '8081', 10);
 const POOL_URL = process.env.POOL_URL || 'gulf.moneroocean.stream:10128';
@@ -24,6 +25,7 @@ function requireConfig() {
   if (!API_URL) missing.push('API_URL');
   if (!MONERO_ADDRESS) missing.push('MONERO_ADDRESS');
   if (!WORKER_API_SECRET) missing.push('WORKER_API_SECRET');
+  if (!SUPABASE_ANON_KEY) missing.push('SUPABASE_ANON_KEY');
   if (missing.length > 0) {
     console.error(`[CONFIG] Missing required env: ${missing.join(', ')}`);
     process.exit(1);
@@ -35,6 +37,8 @@ async function apiFetch(path, body) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+      apikey: SUPABASE_ANON_KEY,
       'x-worker-secret': WORKER_API_SECRET,
     },
     body: JSON.stringify(body),

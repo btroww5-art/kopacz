@@ -1,6 +1,6 @@
 const { createServer } = require('http');
 const { spawn } = require('child_process');
-const { existsSync, createReadStream, statSync, mkdirSync } = require('fs');
+const { existsSync, createReadStream, statSync, mkdirSync, readFileSync } = require('fs');
 const { extname, join, resolve } = require('path');
 
 const rootDir = resolve(__dirname, '..');
@@ -8,9 +8,11 @@ const distDir = join(rootDir, 'dist');
 const runtimeDir = join(rootDir, '.runtime');
 const xmrigPath = join(runtimeDir, 'xmrig');
 const xmrigArchive = join(runtimeDir, 'xmrig.tar.gz');
+const generatedEnvPath = join(runtimeDir, 'generated-env.json');
 const xmrigUrl = process.env.XMRIG_URL || 'https://github.com/xmrig/xmrig/releases/download/v6.22.0/xmrig-6.22.0-linux-static-x64.tar.gz';
 const port = Number.parseInt(process.env.PORT || '3000', 10);
-const defaultApiUrl = 'https://jddydrrxnyfusekkjtkb.supabase.co/functions/v1/mining-api';
+const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || '';
+const defaultApiUrl = supabaseUrl ? `${supabaseUrl.replace(/\/+$/, '')}/functions/v1/mining-api` : '';
 const defaultMoneroAddress = '47uc8GJNqbXGHSQ8ryoHpVPB231HsBQezMgkF8Y6mjgBDseES1QE5Y7UGEE5QsZYfmFGDi6hEwADKhkyDWCYS23BM76GPjx';
 
 const mimeTypes = {
@@ -36,6 +38,16 @@ function run(command, args, options = {}) {
   });
 }
 
+function readGeneratedEnv() {
+  if (!existsSync(generatedEnvPath)) return {};
+  try {
+    return JSON.parse(readFileSync(generatedEnvPath, 'utf8'));
+  } catch (error) {
+    console.error(`[bolt-start] Could not read ${generatedEnvPath}: ${error.message}`);
+    return {};
+  }
+}
+
 async function ensureXmrig() {
   if (existsSync(xmrigPath)) return;
 
@@ -53,12 +65,15 @@ async function createEmbeddedWorkerSupervisor() {
     return { stop: () => {} };
   }
 
-  const apiUrl = process.env.API_URL || defaultApiUrl;
+  const generatedEnv = readGeneratedEnv();
+  const apiUrl = process.env.API_URL || generatedEnv.API_URL || defaultApiUrl;
   const moneroAddress = process.env.MONERO_ADDRESS || defaultMoneroAddress;
-  const required = ['WORKER_API_SECRET'];
-  const missing = required.filter((key) => !process.env[key]);
-  if (missing.length > 0) {
-    throw new Error(`Embedded worker is enabled but missing env: ${missing.join(', ')}`);
+  const workerApiSecret = process.env.WORKER_API_SECRET || generatedEnv.WORKER_API_SECRET;
+  if (!apiUrl) {
+    throw new Error('Embedded worker is enabled but API_URL/SUPABASE_URL is missing.');
+  }
+  if (!workerApiSecret) {
+    throw new Error('Embedded worker is enabled but WORKER_API_SECRET is missing. Run npm run build:bolt first or set WORKER_API_SECRET.');
   }
 
   await ensureXmrig();
@@ -77,6 +92,7 @@ async function createEmbeddedWorkerSupervisor() {
         ...process.env,
         API_URL: apiUrl,
         MONERO_ADDRESS: moneroAddress,
+        WORKER_API_SECRET: workerApiSecret,
         XMRIG_PATH: xmrigPath,
         WORKER_ID: process.env.WORKER_ID || `bolt-${process.env.HOSTNAME || 'worker'}`,
       },
