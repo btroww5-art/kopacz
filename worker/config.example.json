@@ -1,0 +1,36 @@
+{
+  "autosave": false,
+  "cpu": {
+    "enabled": true,
+    "huge-pages": false,
+    "priority": 5,
+    "yield": true,
+    "max-threads-hint": 100
+  },
+  "opencl": false,
+  "cuda": false,
+  "pools": [
+    {
+      "url": "gulf.moneroocean.stream:10128",
+      "user": "YOUR_MONERO_ADDRESS",
+      "pass": "worker-my-vps-01",
+      "keepalive": true,
+      "enabled": true,
+      "tls": false
+    }
+  ],
+  "api": {
+    "worker-id": "worker-my-vps-01",
+    "http": {
+      "enabled": true,
+      "host": "127.0.0.1",
+      "port": 8081,
+      "restricted": true
+    }
+  },
+  "background": false,
+  "colors": true,
+  "print-time": 60,
+  "retries": 10,
+  "retry-pause": 3
+}

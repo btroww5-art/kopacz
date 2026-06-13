@@ -1,0 +1,16 @@
+[Unit]
+Description=Mining Worker - XMRig Reporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/mining-worker
+EnvironmentFile=/opt/mining-worker/mining.env
+ExecStart=/usr/bin/node /opt/mining-worker/worker.js
+Restart=always
+RestartSec=5
+KillSignal=SIGTERM
+
+[Install]
+WantedBy=multi-user.target

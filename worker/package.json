@@ -1,0 +1,9 @@
+{
+  "name": "mining-worker",
+  "version": "1.0.0",
+  "description": "Mining worker client that reports to central dashboard",
+  "main": "worker.js",
+  "scripts": {
+    "start": "node worker.js"
+  }
+}
