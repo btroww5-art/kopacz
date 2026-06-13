@@ -1,8 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createClient, Session } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || ''
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || ''
+declare global {
+  interface Window {
+    __APP_ENV__?: {
+      SUPABASE_URL?: string
+      SUPABASE_ANON_KEY?: string
+      VITE_SUPABASE_URL?: string
+      VITE_SUPABASE_ANON_KEY?: string
+    }
+  }
+}
+
+const runtimeEnv = typeof window !== 'undefined' ? window.__APP_ENV__ : undefined
+const supabaseUrl = runtimeEnv?.VITE_SUPABASE_URL || runtimeEnv?.SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || ''
+const supabaseKey = runtimeEnv?.VITE_SUPABASE_ANON_KEY || runtimeEnv?.SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || ''
 const supabase = supabaseUrl && supabaseKey ? createClient(supabaseUrl, supabaseKey) : null
 
 interface WorkerStats {

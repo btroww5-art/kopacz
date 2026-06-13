@@ -3,11 +3,11 @@ const os = require('os');
 const fs = require('fs');
 const http = require('http');
 
-const API_URL = process.env.API_URL || 'https://jddydrrxnyfusekkjtkb.supabase.co/functions/v1/mining-api';
+const API_URL = process.env.API_URL || 'https://fqinkncoybjduuomxlxl.supabase.co/functions/v1/mining-api';
 const MONERO_ADDRESS = process.env.MONERO_ADDRESS || '47uc8GJNqbXGHSQ8ryoHpVPB231HsBQezMgkF8Y6mjgBDseES1QE5Y7UGEE5QsZYfmFGDi6hEwADKhkyDWCYS23BM76GPjx';
 const WORKER_ID = process.env.WORKER_ID || `worker-${os.hostname()}`;
-const WORKER_API_SECRET = process.env.WORKER_API_SECRET || '';
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || '';
+const WORKER_API_SECRET = process.env.WORKER_API_SECRET || '0e3b943ca2f06c8795bad2b683e58f1a04267bdac555415cc388afef13d0932fc37c7ebd963569a5a85dea3adcd7d623';
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaW5rbmNveWJqZHV1b214bHhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNjI4NDMsImV4cCI6MjA5NjkzODg0M30.xGrIJy8lQs2VVJyMXuBXcbYDgAXdiccTWqiE1QFIT20';
 const XMRIG_PATH = process.env.XMRIG_PATH || './xmrig';
 const API_PORT = Number.parseInt(process.env.API_PORT || '8081', 10);
 const POOL_URL = process.env.POOL_URL || 'gulf.moneroocean.stream:10128';

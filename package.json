@@ -9,7 +9,8 @@
     "build:bolt": "npm run setup:supabase && npm run build",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "node scripts/bolt-start.cjs"
+    "start": "node scripts/bolt-start.cjs",
+    "diagnose:runtime": "node scripts/diagnose-runtime.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
